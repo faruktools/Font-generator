@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free YouTube Thumbnail Downloader - Extract and download high-quality thumbnails from any YouTube video in HD, SD, and max resolution formats.">
+    <meta name="keywords" content="YouTube Thumbnail Downloader, Free YouTube Thumbnail Grabber, Download YouTube Video Thumbnails, YouTube thumbnail extractor">
+    <title>YouTube Thumbnail Downloader | Free HD Thumbnail Grabber</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF0000;
+            --primary-light: #FF4D4D;
+            --dark: #0F0F0F;
+            --light: #FFFFFF;
+            --gray: #606060;
+            --light-gray: #F1F1F1;
+            --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 0 30px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .ad-banner {
+            background-color: #f8f8f8;
+            border: 1px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin: 20px 0;
+            border-radius: 8px;
+            min-height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ad-banner p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .tool-container {
+            background-color: var(--light);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .input-section {
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        #youtube-url {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        #youtube-url:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        #fetch-btn {
+            background-color: var(--primary);
+            color: var(--light);
+            border: none;
+            border-radius: 8px;
+            padding: 0 20px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        #fetch-btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        .instructions {
+            background-color: #FFF5F5;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+        }
+
+        .instructions h3 {
+            margin-bottom: 8px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .results h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--dark);
+        }
+
+        .thumbnails-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .thumbnail-card {
+            background-color: var(--light);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .thumbnail-img-container {
+            position: relative;
+            padding-top: 56.25%; /* 16:9 aspect ratio */
+            overflow: hidden;
+        }
+
+        .thumbnail-img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-info {
+            padding: 15px;
+        }
+
+        .thumbnail-quality {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .thumbnail-dimensions {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .download-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary);
+            color: var(--light);
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .download-btn:hover {
+            background-color: var(--primary-light);
+        }
+
+        .error-message {
+            color: #D32F2F;
+            background-color: #FFEBEE;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: var(--gray);
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            #fetch-btn {
+                padding: 12px;
+            }
+            
+            .thumbnails-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .tool-container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>YouTube Thumbnail Downloader</h1>
+            <p class="subtitle">Extract and download high-quality thumbnails from any YouTube video</p>
+        </header>
+
+        <!-- Top Ad Banner -->
+        <div class="ad-banner" id="top-ad">
+            <p>Advertisement</p>
+        </div>
+
+        <div class="tool-container">
+            <div class="input-section">
+                <label for="youtube-url">YouTube Video URL:</label>
+                <div class="input-group">
+                    <input type="text" id="youtube-url" placeholder="https://www.youtube.com/watch?v=..." autofocus>
+                    <button id="fetch-btn">Get Thumbnails</button>
+                </div>
+            </div>
+
+            <div class="instructions">
+                <h3>How to use:</h3>
+                <ol>
+                    <li>Paste any YouTube video URL in the field above</li>
+                    <li>Click "Get Thumbnails" button</li>
+                    <li>Preview and download your preferred thumbnail quality</li>
+                </ol>
+            </div>
+
+            <div class="error-message" id="error-message">
+                Invalid YouTube URL. Please enter a valid YouTube video URL.
+            </div>
+
+            <div class="results" id="results">
+                <h2>Available Thumbnails</h2>
+                <div class="thumbnails-grid" id="thumbnails-grid">
+                    <!-- Thumbnail cards will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Ad Banner -->
+        <div class="ad-banner" id="bottom-ad">
+            <p>Advertisement</p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>&copy; <script>document.write(new Date().getFullYear())</script> YouTube Thumbnail Downloader. This tool is not affiliated with YouTube.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const youtubeUrlInput = document.getElementById('youtube-url');
+            const fetchBtn = document.getElementById('fetch-btn');
+            const resultsSection = document.getElementById('results');
+            const thumbnailsGrid = document.getElementById('thumbnails-grid');
+            const errorMessage = document.getElementById('error-message');
+
+            // YouTube thumbnail quality options
+            const thumbnailQualities = [
+                { name: 'Max Resolution', code: 'maxresdefault', description: 'Highest quality available (1280×720 or higher)' },
+                { name: 'High Quality', code: 'hqdefault', description: 'High quality (480×360)' },
+                { name: 'Medium Quality', code: 'mqdefault', description: 'Medium quality (320×180)' },
+                { name: 'Standard Quality', code: 'sddefault', description: 'Standard quality (640×480)' },
+                { name: 'Default', code: 'default', description: 'Default quality (120×90)' }
+            ];
+
+            fetchBtn.addEventListener('click', fetchThumbnails);
+            youtubeUrlInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    fetchThumbnails();
+                }
+            });
+
+            function fetchThumbnails() {
+                const youtubeUrl = youtubeUrlInput.value.trim();
+                const videoId = extractVideoId(youtubeUrl);
+
+                if (!videoId) {
+                    showError();
+                    return;
+                }
+
+                hideError();
+                displayThumbnails(videoId);
+            }
+
+            function extractVideoId(url) {
+                // Regular expressions to match YouTube URL patterns
+                const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+                const match = url.match(regExp);
+
+                return (match && match[2].length === 11) ? match[2] : null;
+            }
+
+            function displayThumbnails(videoId) {
+                thumbnailsGrid.innerHTML = '';
+
+                thumbnailQualities.forEach(quality => {
+                    const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality.code}.jpg`;
+                    
+                    const card = document.createElement('div');
+                    card.className = 'thumbnail-card';
+
+                    card.innerHTML = `
+                        <div class="thumbnail-img-container">
+                            <img src="${thumbnailUrl}" alt="${quality.name} thumbnail" class="thumbnail-img" loading="lazy">
+                        </div>
+                        <div class="thumbnail-info">
+                            <div class="thumbnail-quality">${quality.name}</div>
+                            <div class="thumbnail-dimensions">${quality.description}</div>
+                            <a href="${thumbnailUrl}" target="_blank" class="download-btn" download="thumbnail-${quality.code}-${videoId}.jpg">Download</a>
+                        </div>
+                    `;
+
+                    thumbnailsGrid.appendChild(card);
+                });
+
+                resultsSection.style.display = 'block';
+            }
+
+            function showError() {
+                errorMessage.style.display = 'block';
+                resultsSection.style.display = 'none';
+            }
+
+            function hideError() {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
