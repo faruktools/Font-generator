@@ -55,28 +55,6 @@
     .copy-btn:hover { background: var(--secondary-color); }
     .copy-btn.copied { background: #4CAF50; }
 
-    /* Additional fonts */
-    .font-style-1 { font-family: 'Brush Script MT', cursive; }
-    .font-style-2 { font-family: 'Courier New', monospace; font-weight: bold; }
-    .font-style-3 { font-family: 'Arial Black', sans-serif; }
-    .font-style-4 { font-family: 'Times New Roman', serif; font-style: italic; letter-spacing: 1px; }
-    .font-style-5 { font-family: 'Verdana', sans-serif; text-transform: uppercase; letter-spacing: 1px; }
-    .font-style-6 { font-family: 'Georgia', serif; font-weight: bold; font-style: italic; }
-    .font-style-7 { font-family: 'Trebuchet MS', sans-serif; text-shadow: 1px 1px 1px rgba(0,0,0,0.3); }
-    .font-style-8 { font-family: 'Lucida Sans Unicode', sans-serif; letter-spacing: 2px; }
-    .font-style-9 { font-family: 'Comic Sans MS', cursive; }
-    .font-style-10 { font-family: 'Impact', sans-serif; font-weight: bold; }
-    .font-style-11 { font-family: 'Copperplate', serif; }
-    .font-style-12 { font-family: 'Garamond', serif; font-style: italic; }
-    .font-style-13 { font-family: 'Franklin Gothic Medium', sans-serif; font-weight: bold; }
-    .font-style-14 { font-family: 'Palatino Linotype', serif; font-style: italic; }
-    .font-style-15 { font-family: 'Gill Sans', sans-serif; letter-spacing: 2px; }
-    .font-style-16 { font-family: 'Futura', sans-serif; text-transform: uppercase; }
-    .font-style-17 { font-family: 'Didot', serif; font-weight: bold; }
-    .font-style-18 { font-family: 'Optima', sans-serif; font-style: italic; }
-    .font-style-19 { font-family: 'Century Gothic', sans-serif; text-transform: uppercase; }
-    .font-style-20 { font-family: 'Book Antiqua', serif; text-decoration: underline; }
-
     .instructions { background: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
     .instructions h2 { margin-bottom: 15px; color: var(--primary-color); }
     .instructions ol { padding-left: 20px; }
@@ -150,13 +128,11 @@
         <li>See instant preview of different font styles</li>
         <li>Click "Copy" next to any style you like</li>
         <li>Paste it directly into your Instagram bio or posts</li>
-        <li>No special apps needed - works directly in your browser!</li>
       </ol>
     </div>
 
     <!-- Bottom Ad Banner -->
     <div class="ad-banner" id="bottom-ad">
-      <!-- AdSense embed placeholder -->
       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
       <ins class="adsbygoogle"
            style="display:block"
@@ -174,61 +150,56 @@
   </footer>
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const textInput = document.getElementById('text-input');
-      const bioPreviewText = document.getElementById('bio-preview-text');
-      const fontsContainer = document.getElementById('fonts-container');
+    const transformers = [
+      text => text.split('').map(c => c + '\u0301').join(''), // Example: acute accent
+      text => text.split('').map(c => c + '\u0332').join(''), // underline
+      text => text.toUpperCase(),
+      text => text.toLowerCase(),
+      text => text.split('').reverse().join(''),
+      text => text.split('').map(c => c + '\u0300').join(''),
+      text => text.split('').map(c => c + '\u0308').join(''),
+      text => text.split('').map(c => c + '\u20DD').join(''),
+      text => text.split('').map(c => '\u0336' + c).join(''),
+      text => text.split('').map(c => '\u0334' + c).join(''),
+      text => text.split('').map(c => '\u0489' + c).join(''),
+      text => text.split('').map(c => c + '\u0302').join(''),
+      text => text.split('').map(c => c + '\u0304').join(''),
+      text => text.split('').map(c => c + '\u0305').join(''),
+      text => text.split('').map(c => '\u0307' + c).join(''),
+      text => text.split('').map(c => '\u030A' + c).join(''),
+      text => text.split('').map(c => '\u0316' + c).join(''),
+      text => text.split('').map(c => c + '\u0317').join(''),
+      text => text.split('').map(c => c + '\u031B').join(''),
+      text => text.split('').map(c => '\u0324' + c).join('')
+    ];
 
-      const fontStyles = [...Array(20)].map((_, i) => ({
-        id: i + 1,
-        name: 'Font Style ' + (i + 1),
-        className: 'font-style-' + (i + 1)
-      }));
+    const textInput = document.getElementById('text-input');
+    const bioPreviewText = document.getElementById('bio-preview-text');
+    const fontsContainer = document.getElementById('fonts-container');
 
-      function initFontItems() {
-        fontsContainer.innerHTML = '';
-        fontStyles.forEach(style => {
-          const fontItem = document.createElement('div');
-          fontItem.className = 'font-item';
-          fontItem.innerHTML = `
-            <div class="font-preview ${style.className}" data-id="${style.id}">${style.name}</div>
-            <button class="copy-btn" data-id="${style.id}">Copy</button>
-          `;
-          fontsContainer.appendChild(fontItem);
-        });
-      }
-
-      function updateFontPreviews(text) {
-        const previewElements = document.querySelectorAll('.font-preview');
-        previewElements.forEach(el => {
-          el.textContent = text || fontStyles.find(s => s.id == el.dataset.id).name;
-        });
-        bioPreviewText.textContent = text || 'Your styled text will appear here';
-      }
-
-      function copyToClipboard(text, button) {
-        navigator.clipboard.writeText(text).then(() => {
-          button.textContent = 'Copied!';
-          button.classList.add('copied');
-          setTimeout(() => {
-            button.textContent = 'Copy';
-            button.classList.remove('copied');
-          }, 2000);
-        });
-      }
-
-      textInput.addEventListener('input', () => updateFontPreviews(textInput.value));
-      fontsContainer.addEventListener('click', e => {
-        if (e.target.classList.contains('copy-btn')) {
-          const id = e.target.dataset.id;
-          const preview = document.querySelector(`.font-preview[data-id="${id}"]`);
-          copyToClipboard(preview.textContent, e.target);
-        }
+    function updateFonts() {
+      fontsContainer.innerHTML = '';
+      transformers.forEach((fn, i) => {
+        const fancy = fn(textInput.value || 'Fancy Text');
+        const div = document.createElement('div');
+        div.className = 'font-item';
+        div.innerHTML = `
+          <div class="font-preview">${fancy}</div>
+          <button class="copy-btn">Copy</button>
+        `;
+        div.querySelector('.copy-btn').onclick = () => {
+          navigator.clipboard.writeText(fancy).then(() => {
+            div.querySelector('.copy-btn').textContent = 'Copied!';
+            setTimeout(() => div.querySelector('.copy-btn').textContent = 'Copy', 2000);
+          });
+        };
+        fontsContainer.appendChild(div);
       });
+      bioPreviewText.textContent = textInput.value || 'Your styled text will appear here';
+    }
 
-      initFontItems();
-      updateFontPreviews('');
-    });
+    textInput.addEventListener('input', updateFonts);
+    updateFonts();
   </script>
 </body>
-  </html>
+</html>
