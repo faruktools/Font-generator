@@ -449,6 +449,8 @@
             opacity: 0.7;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
 </head>
 <body class="light">
     <div class="container">
@@ -872,19 +874,13 @@
             }
             
             function downloadTweet() {
-                alert("In a real implementation, this would download the tweet as an image using html2canvas or similar library.");
-                
-                /*
-                // Actual implementation would look something like this:
-                html2canvas(tweetPreview).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = 'fake-tweet.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
-                });
-                */
-            }
-        });
+    html2canvas(document.getElementById('tweet-preview')).then(canvas => {
+        const link = document.createElement('a');
+        link.download = 'fake-tweet.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+    });
+}
     </script>
 </body>
 </html>
