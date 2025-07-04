@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free online QR Code Generator - Create custom QR codes for URLs, WiFi, contacts, SMS and more. Download as PNG with color customization.">
+    <meta name="keywords" content="QR code generator, free QR code, custom QR code, WiFi QR code, vCard QR code">
+    <title>QRGen Pro | Free Custom QR Code Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background: var(--gradient);
+            color: white;
+            margin-bottom: 2rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #f8f9fa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Ad Container */
+        .ad-container {
+            background: white;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            margin: 1.5rem 0;
+            text-align: center;
+            border: 1px dashed #ccc;
+        }
+
+        .ad-label {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Main App Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Form Styles */
+        .form-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border 0.3s;
+        }
+
+        select:focus, input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(67, 97, 238, 0.2);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* QR Preview Section */
+        .preview-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        .qr-container {
+            position: relative;
+            margin: 1rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        #qr-code {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            aspect-ratio: 1/1;
+        }
+
+        .qr-stickers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .sticker {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            opacity: 0.7;
+        }
+
+        .sticker-1 {
+            top: -15px;
+            left: -15px;
+            transform: rotate(-15deg);
+        }
+
+        .sticker-2 {
+            bottom: -15px;
+            right: -15px;
+            transform: rotate(15deg);
+        }
+
+        .customization-options {
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .color-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .color-picker {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #ddd;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: #f0f4ff;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            .color-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            padding: 0.8rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            position: relative;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>QRGen Pro</h1>
+            <p class="subtitle">Generate custom QR codes for any purpose - free and easy!</p>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Top Ad Slot -->
+        <div class="ad-container">
+            <div class="ad-label">Advertisement</div>
+            <div id="ad-top"></div>
+        </div>
+
+        <div class="app-container">
+            <div class="form-section">
+                <div class="tab-nav">
+                    <button class="tab-btn active" data-tab="text">Text</button>
+                    <button class="tab-btn" data-tab="url">URL</button>
+                    <button class="tab-btn" data-tab="wifi">WiFi</button>
+                    <button class="tab-btn" data-tab="contact">Contact</button>
+                    <button class="tab-btn" data-tab="email">Email</button>
+                    <button class="tab-btn" data-tab="sms">SMS</button>
+                </div>
+
+                <!-- Text Tab -->
+                <div id="text-tab" class="tab-content active">
+                    <div class="form-group">
+                        <label for="text-content">Enter your text</label>
+                        <textarea id="text-content" placeholder="Type any text you want to encode..."></textarea>
+                    </div>
+                </div>
+
+                <!-- URL Tab -->
+                <div id="url-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="url-content">Website URL</label>
+                        <input type="url" id="url-content" placeholder="https://example.com">
+                    </div>
+                </div>
+
+                <!-- WiFi Tab -->
+                <div id="wifi-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="wifi-ssid">Network Name (SSID)</label>
+                        <input type="text" id="wifi-ssid" placeholder="MyWiFiNetwork">
+                    </div>
+                    <div class="form-group">
+                        <label for="wifi-password">Password</label>
+                        <input type="text" id="wifi-password" placeholder="wifipassword123">
+                    </div>
+                    <div class="form-group">
+                        <label>Encryption Type</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="wifi-wep" name="wifi-encryption" value="WEP">
+                                <label for="wifi-wep">WEP</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="wifi-wpa" name="wifi-encryption" value="WPA" checked>
+                                <label for="wifi-wpa">WPA/WPA2</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="wifi-none" name="wifi-encryption" value="nopass">
+                                <label for="wifi-none">None</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="wifi-hidden">Hidden Network</label>
+                        <input type="checkbox" id="wifi-hidden">
+                    </div>
+                </div>
+
+                <!-- Contact Tab -->
+                <div id="contact-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="contact-name">Full Name</label>
+                        <input type="text" id="contact-name" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-phone">Phone Number</label>
+                        <input type="tel" id="contact-phone" placeholder="+1234567890">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-email">Email</label>
+                        <input type="email" id="contact-email" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-company">Company</label>
+                        <input type="text" id="contact-company" placeholder="Company Inc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-title">Job Title</label>
+                        <input type="text" id="contact-title" placeholder="Job Title">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-address">Address</label>
+                        <input type="text" id="contact-address" placeholder="123 Main St, City">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-website">Website</label>
+                        <input type="url" id="contact-website" placeholder="https://example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-notes">Notes</label>
+                        <textarea id="contact-notes" placeholder="Additional information"></textarea>
+                    </div>
+                </div>
+
+                <!-- Email Tab -->
+                <div id="email-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="email-address">Email Address</label>
+                        <input type="email" id="email-address" placeholder="recipient@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-subject">Subject</label>
+                        <input type="text" id="email-subject" placeholder="Email Subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-body">Message</label>
+                        <textarea id="email-body" placeholder="Email body content"></textarea>
+                    </div>
+                </div>
+
+                <!-- SMS Tab -->
+                <div id="sms-tab" class="tab-content">
+                    <div class="form-group">
+                        <label for="sms-number">Phone Number</label>
+                        <input type="tel" id="sms-number" placeholder="+1234567890">
+                    </div>
+                    <div class="form-group">
+                        <label for="sms-message">Message</label>
+                        <textarea id="sms-message" placeholder="Your SMS message"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="error-correction">Error Correction Level</label>
+                    <select id="error-correction">
+                        <option value="L">Low (7%)</option>
+                        <option value="M" selected>Medium (15%)</option>
+                        <option value="Q">Quartile (25%)</option>
+                        <option value="H">High (30%)</option>
+                    </select>
+                </div>
+
+                <button id="generate-btn" class="btn btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 6V12L16 14M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    Generate QR Code
+                </button>
+            </div>
+
+            <div class="preview-section">
+                <h2>QR Code Preview</h2>
+                <div class="qr-container">
+                    <div id="qr-code"></div>
+                    <div class="qr-stickers">
+                        <svg class="sticker sticker-1" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" fill="#4361ee"/>
+                            <path d="M12 16V12M12 8H12.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <svg class="sticker sticker-2" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" fill="#f72585"/>
+                            <path d="M8 14C8 14 9.5 16 12 16C14.5 16 16 14 16 14M9 9H9.01M15 9H15.01" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="customization-options">
+                    <h3>Customize Appearance</h3>
+                    <div class="color-options">
+                        <div class="color-option">
+                            <input type="color" id="qr-color" value="#000000" class="color-picker">
+                            <label for="qr-color">QR Color</label>
+                        </div>
+                        <div class="color-option">
+                            <input type="color" id="bg-color" value="#ffffff" class="color-picker">
+                            <label for="bg-color">Background</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="qr-size">Size (px)</label>
+                        <input type="range" id="qr-size" min="100" max="500" value="300">
+                    </div>
+                </div>
+
+                <div class="btn-group">
+                    <button id="download-btn" class="btn btn-primary" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M21 15V19C21 20.1046 20.1046 21 19 21H5C3.89543 21 3 20.1046 3 19V15M7 10L12 15M12 15L17 10M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Download PNG
+                    </button>
+                    <button id="reset-btn" class="btn btn-secondary">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 4V10H10M20 20V14H14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Reset
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Ad Slot -->
+        <div class="ad-container">
+            <div class="ad-label">Advertisement</div>
+            <div id="ad-bottom"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>QRGen Pro - Free QR Code Generator | No tracking, no registration required</p>
+            <p>© 2023 QRGen Pro. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const generateBtn = document.getElementById('generate-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const qrCodeElement = document.getElementById('qr-code');
+            const qrColorPicker = document.getElementById('qr-color');
+            const bgColorPicker = document.getElementById('bg-color');
+            const qrSizeSlider = document.getElementById('qr-size');
+            const errorCorrectionSelect = document.getElementById('error-correction');
+            
+            // Current QR code data
+            let currentQRData = '';
+            let currentTab = 'text';
+            let currentQRCodeCanvas = null;
+            
+            // Tab Navigation
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    
+                    // Update active tab button
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    
+                    // Update active tab content
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                    
+                    currentTab = tabId;
+                });
+            });
+            
+            // Generate QR Code
+            generateBtn.addEventListener('click', generateQRCode);
+            
+            // Download QR Code
+            downloadBtn.addEventListener('click', downloadQRCode);
+            
+            // Reset Form
+            resetBtn.addEventListener('click', resetForm);
+            
+            // Color and size changes
+            qrColorPicker.addEventListener('input', updateQRCode);
+            bgColorPicker.addEventListener('input', updateQRCode);
+            qrSizeSlider.addEventListener('input', updateQRCode);
+            errorCorrectionSelect.addEventListener('change', updateQRCode);
+            
+            // Generate QR Code function
+            function generateQRCode() {
+                let qrData = '';
+                
+                switch(currentTab) {
+                    case 'text':
+                        qrData = document.getElementById('text-content').value.trim();
+                        break;
+                    case 'url':
+                        let url = document.getElementById('url-content').value.trim();
+                        if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                            url = 'https://' + url;
+                        }
+                        qrData = url;
+                        break;
+                    case 'wifi':
+                        const ssid = document.getElementById('wifi-ssid').value.trim();
+                        const password = document.getElementById('wifi-password').value.trim();
+                        const encryption = document.querySelector('input[name="wifi-encryption"]:checked').value;
+                        const hidden = document.getElementById('wifi-hidden').checked ? 'true' : 'false';
+                        qrData = `WIFI:T:${encryption};S:${ssid};P:${password};H:${hidden};;`;
+                        break;
+                    case 'contact':
+                        const name = document.getElementById('contact-name').value.trim();
+                        const phone = document.getElementById('contact-phone').value.trim();
+                        const email = document.getElementById('contact-email').value.trim();
+                        const company = document.getElementById('contact-company').value.trim();
+                        const title = document.getElementById('contact-title').value.trim();
+                        const address = document.getElementById('contact-address').value.trim();
+                        const website = document.getElementById('contact-website').value.trim();
+                        const notes = document.getElementById('contact-notes').value.trim();
+                        
+                        let vCard = 'BEGIN:VCARD\nVERSION:3.0\n';
+                        if (name) vCard += `FN:${name}\nN:${name.split(' ').reverse().join(';')};;;\n`;
+                        if (phone) vCard += `TEL:${phone}\n`;
+                        if (email) vCard += `EMAIL:${email}\n`;
+                        if (company) vCard += `ORG:${company}\n`;
+                        if (title) vCard += `TITLE:${title}\n`;
+                        if (address) vCard += `ADR:;;${address}\n`;
+                        if (website) vCard += `URL:${website}\n`;
+                        if (notes) vCard += `NOTE:${notes}\n`;
+                        vCard += 'END:VCARD';
+                        
+                        qrData = vCard;
+                        break;
+                    case 'email':
+                        const emailAddress = document.getElementById('email-address').value.trim();
+                        const subject = document.getElementById('email-subject').value.trim();
+                        const body = document.getElementById('email-body').value.trim();
+                        qrData = `MATMSG:TO:${emailAddress};SUB:${subject};BODY:${body};;`;
+                        break;
+                    case 'sms':
+                        const number = document.getElementById('sms-number').value.trim();
+                        const message = document.getElementById('sms-message').value.trim();
+                        qrData = `SMSTO:${number}:${message}`;
+                        break;
+                }
+                
+                if (!qrData) {
+                    alert('Please enter some data to generate a QR code');
+                    return;
+                }
+                
+                currentQRData = qrData;
+                updateQRCode();
+                downloadBtn.disabled = false;
+            }
+            
+            // Update QR Code appearance
+            function updateQRCode() {
+                if (!currentQRData) return;
+                
+                const qrColor = qrColorPicker.value;
+                const bgColor = bgColorPicker.value;
+                const size = parseInt(qrSizeSlider.value);
+                const errorCorrection = errorCorrectionSelect.value;
+                
+                // Clear previous QR code
+                while (qrCodeElement.firstChild) {
+                    qrCodeElement.removeChild(qrCodeElement.firstChild);
+                }
+                
+                // Generate new QR code
+                QRCode.toCanvas(currentQRData, {
+                    width: size,
+                    color: {
+                        dark: qrColor,
+                        light: bgColor
+                    },
+                    errorCorrectionLevel: errorCorrection,
+                    margin: 1
+                }, function(error, canvas) {
+                    if (error) {
+                        console.error(error);
+                        alert('Error generating QR code. Please try again.');
+                        return;
+                    }
+                    
+                    // Store the canvas reference for downloading
+                    currentQRCodeCanvas = canvas;
+                    
+                    // Add the canvas to the DOM
+                    qrCodeElement.appendChild(canvas);
+                });
+            }
+            
+            // Download QR Code as PNG
+            function downloadQRCode() {
+                if (!currentQRCodeCanvas) {
+                    alert('No QR code generated yet');
+                    return;
+                }
+                
+                const link = document.createElement('a');
+                link.download = 'qr-code.png';
+                link.href = currentQRCodeCanvas.toDataURL('image/png');
+                link.click();
+            }
+            
+            // Reset form
+            function resetForm() {
+                tabContents.forEach(content => {
+                    const inputs = content.querySelectorAll('input, textarea, select');
+                    inputs.forEach(input => {
+                        if (input.type === 'radio' || input.type === 'checkbox') {
+                            input.checked = false;
+                        } else {
+                            input.value = '';
+                        }
+                    });
+                });
+                
+                // Reset default values
+                document.querySelector('input[name="wifi-encryption"][value="WPA"]').checked = true;
+                qrColorPicker.value = '#000000';
+                bgColorPicker.value = '#ffffff';
+                qrSizeSlider.value = '300';
+                errorCorrectionSelect.value = 'M';
+                
+                // Clear QR code
+                while (qrCodeElement.firstChild) {
+                    qrCodeElement.removeChild(qrCodeElement.firstChild);
+                }
+                currentQRData = '';
+                currentQRCodeCanvas = null;
+                downloadBtn.disabled = true;
+                
+                // Set first tab as active
+                tabBtns.forEach((btn, index) => {
+                    btn.classList.remove('active');
+                    if (index === 0) btn.classList.add('active');
+                });
+                
+                tabContents.forEach((content, index) => {
+                    content.classList.remove('active');
+                    if (index === 0) content.classList.add('active');
+                });
+                
+                currentTab = 'text';
+            }
+        });
+    </script>
+</body>
+</html>
